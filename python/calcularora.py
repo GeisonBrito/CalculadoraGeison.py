@@ -34,11 +34,20 @@ def main(page: ft.Page):
     
     result = ft.Text(value = '0', color = colors.WHITE, size=20)
     
-    def calculate():
-        pass
-    
+    def calculate(operador, value_at):
+        try:
+            value = eval(value_at)
+            
+            if operador == '%':
+                value /= 100
+            elif operador ==  '±':
+                value = -value
+        except:
+            return 'Error'        
+        return value     
+        
     def select(e):
-        value_at = result.value if result.value != '0' else '' 
+        value_at = result.value if result.value not in ('0', 'Error') else '' 
         value = e.control.content.value
         
         if value.isdigit():
@@ -48,10 +57,11 @@ def main(page: ft.Page):
         else:
             if value_at and value_at[-1] in ('/','*','-','+','.'):
                 value_at = value_at[:-1]   
+            
             value =  value_at + value
             
-            if value[-1] in ('=','%','±',):
-                value = calculate()   
+            if value[-1] in ('=','%','±'):
+                value = calculate(operador=value[-1], value_at=value_at)   
                 
         result.value = value       
         result.update()     
